@@ -23,12 +23,8 @@
 (defn print-command
   [{out :out err :err}]
   (if (string/blank? out)
-    (string/trim-newline err)
-    (string/trim-newline out)))
-
-(defn enqueue
-  [queue message]
-  (wcar (carmine-mq/enqueue queue message)))
+    (println (string/trim-newline err))
+    (println (string/trim-newline out))))
 
 (defn deploy-queue
   [msg]

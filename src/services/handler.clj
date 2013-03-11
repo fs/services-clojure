@@ -4,6 +4,8 @@
             [compojure.route :as route]
             [clojure.string :as string]
             [cheshire.core :refer :all]
+            [environ.core :refer [env]]
+            [ring.adapter.jetty :as jetty]
             [taoensso.carmine :as car]
             [taoensso.carmine.message-queue :as carmine-mq]))
 
@@ -17,7 +19,8 @@
 
 (defn add
   [org repo]
-  (enqueue "add" {:org org :repo repo}))
+  (enqueue "add" {:org org :repo repo})
+  "enqueued")
 
 (defn deploy
   [project branch]
@@ -31,7 +34,7 @@
       (deploy (response "project_name") "develop")
       (generate-string response))))
 
-(defroutes app-routes
+(defroutes app
   (GET "/deploy/:project" [project :as {{branch :branch} :params}]
        (deploy project branch))
   (GET "/add/:org/:repo" [org repo]
@@ -40,5 +43,7 @@
         (ci-hook params))
   (route/not-found "Not Found"))
 
-(def app
-  (handler/api app-routes))
+(defn -main [& [port]]
+  (let [port (Integer. (or port (env :port) 5000))]
+    (jetty/run-jetty (handler/api app)
+                     {:port port :join? false})))
