@@ -35,9 +35,9 @@
       (generate-string response))))
 
 (defroutes app
-  (GET "/deploy/:project" [project :as {{branch :branch} :params}]
+  (POST "/deploy/:project" [project :as {{branch :branch} :params}]
        (deploy project branch))
-  (GET "/add/:org/:repo" [org repo]
+  (POST "/add/:org/:repo" [org repo]
        (add org repo))
   (POST "/ci" {params :body}
         (ci-hook params))
