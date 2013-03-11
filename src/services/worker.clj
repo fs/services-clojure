@@ -1,12 +1,7 @@
 (ns services.worker
-  (:require [taoensso.carmine :as car]
-            [taoensso.carmine.message-queue :as carmine-mq]
-            [clojure.string :as string]
+  (:require [clojure.string :as string]
+            [services.redis-support :refer :all]
             [clojure.java.shell :refer [sh]]))
-
-(def pool         (car/make-conn-pool))
-(def spec-server1 (car/make-conn-spec))
-(defmacro wcar [& body] `(car/with-conn pool spec-server1 ~@body))
 
 (def projects-path "code/")
 
@@ -39,15 +34,8 @@
     (let [url (str "git@github.com:" org "/" repo ".git")]
       (print-command (sh "bin/add" (str projects-path repo) url)))))
 
-(def deploy-worker
-  (wcar (carmine-mq/make-dequeue-worker
-   pool spec-server1 "deploy"
-   :handler-fn deploy-queue)))
-
-(def add-worker
-  (wcar (carmine-mq/make-dequeue-worker
-   pool spec-server1 "add"
-   :handler-fn add-queue)))
+(create-worker "deploy" deploy-queue)
+(create-worker "add" add-queue)
 
 (defn -main
   [& args]
