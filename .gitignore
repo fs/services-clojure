@@ -11,3 +11,4 @@ pom.xml
 .lein-env
 /code
 .lein-repl-history
+/log
