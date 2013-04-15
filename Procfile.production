@@ -1,2 +1,2 @@
-web: lein with-profile production trampoline run -m services.handler
+web: lein with-profile production trampoline run -m services.handler 80
 worker: lein trampoline run -m services.worker
