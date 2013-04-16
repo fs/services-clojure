@@ -3,12 +3,6 @@
             [services.redis-support :refer :all]
             [clojure.java.shell :refer [sh]]))
 
-(def projects-path-format "/home/%s/application")
-
-(defn app-path
-  [project]
-  (format projects-path-format project))
-
 (defn deploy-branch
   [branch]
   (if (empty? branch)
@@ -25,7 +19,7 @@
   [msg]
   (let [{project :project branch :branch} msg]
     (println "received" project branch)
-    (print-command (sh "bin/deploy" (app-path project) (deploy-branch branch)))))
+    (print-command (sh "bin/deploy" project (deploy-branch branch)))))
 
 (create-worker "deploy" deploy-queue)
 
