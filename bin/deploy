@@ -1,12 +1,11 @@
-#!/bin/bash
-old_path=$PWD
-path=${1:-$old_path}
-script=script/deploy
+#!/usr/bin/env ruby
 
-if [ -x $path/$script ]; then
-  cd $path
-  $script $2
-  cd $old_path
+path = ARGV.shift
+branch = ARGV.shift || 'master'
+script = "#{path}/script/deploy"
+
+if File.exists?(script)
+  puts `#{script} #{branch}`
 else
-  echo "ERROR: Make sure that there's a deploy script at $path/$script"
-fi
+  raise "ERROR: Make sure that there's a deploy script at #{script}"
+end

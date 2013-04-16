@@ -3,11 +3,11 @@
             [services.redis-support :refer :all]
             [clojure.java.shell :refer [sh]]))
 
-(def projects-path "code/")
+(def projects-path-format "/home/%s/application")
 
 (defn app-path
   [project]
-  (str projects-path project))
+  (format projects-path-format project))
 
 (defn deploy-branch
   [branch]
@@ -27,15 +27,7 @@
     (println "received" project branch)
     (print-command (sh "bin/deploy" (app-path project) (deploy-branch branch)))))
 
-(defn add-queue
-  [msg]
-  (let [{org :org repo :repo} msg]
-    (println "received" org repo)
-    (let [url (str "git@github.com:" org "/" repo ".git")]
-      (print-command (sh "bin/add" (str projects-path repo) url)))))
-
 (create-worker "deploy" deploy-queue)
-(create-worker "add" add-queue)
 
 (defn -main
   [& args]
