@@ -10,11 +10,15 @@
   [branch status]
   (generate-string (ci-payload branch status)))
 
+(defn query-params
+  [request params]
+  (assoc request :query-params params))
+
 (defn ci-request
   [deploy-branches branch status]
   (body (content-type (-> (request :post "/ci")
-                          (assoc :query-params
-                                 {:deploy-branches (string/join "," deploy-branches)}))
+                          (query-params {:deploy-branches
+                                         (string/join "," deploy-branches)}))
                       "application/json")
         (json-ci-payload branch status)))
 
