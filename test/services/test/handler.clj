@@ -10,16 +10,13 @@
   [branch status]
   (generate-string (ci-payload branch status)))
 
-(defn ci-request-string
-  [deploy-branches]
-  (if (empty? deploy-branches)
-    "/ci"
-    (str "/ci" (:deploy-branches (string/join "," deploy-branches)))))
-
 (defn ci-request
   [deploy-branches branch status]
-  (body (content-type (request :post (ci-request-string deploy-branches)) "application/json")
-                      (json-ci-payload branch status)))
+  (body (content-type (-> (request :post "/ci")
+                          (assoc :query-params
+                                 {:deploy-branches (string/join "," deploy-branches)}))
+                      "application/json")
+        (json-ci-payload branch status)))
 
 (deftest test-app
   (testing "/ci"
