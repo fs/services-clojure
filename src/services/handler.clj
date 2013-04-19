@@ -23,7 +23,8 @@
 (defroutes app
   (POST "/deploy/:project" [project :as {{branch :branch} :params}]
        (deploy project branch))
-  (POST "/ci" {params :body}
+  (POST "/ci" {params :body :as request-map}
+        (println request-map)
         (ci-hook params))
   (route/not-found "Not Found"))
 

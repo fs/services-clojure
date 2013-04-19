@@ -1,14 +1,14 @@
 (ns services.test.fixtures)
 
 (defn ci-payload
-  [branch]
+  [branch status]
   {
     "branch_name" branch,
     "branch_url" "https://semaphoreapp.com/projects/44/branches/50",
     "project_name" "base-app",
     "build_url" "https://semaphoreapp.com/projects/44/branches/50/builds/15",
     "build_number" 15,
-    "result" "passed",
+    "result" status,
     "started_at" "2012-07-09T15:23:53Z",
     "finished_at" "2012-07-09T15:30:16Z",
     "commit" {
