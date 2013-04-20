@@ -4,8 +4,10 @@
             [compojure.route :as route]
             [clojure.string :as string]
             [cheshire.core :refer :all]
+            [clojure.java.shell :refer [sh]]
             [environ.core :refer [env]]
             [ring.adapter.jetty :as jetty]
+            [services.middleware :refer [wrap-authentication]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [services.redis-support :refer :all]))
 
@@ -36,5 +38,6 @@
 (defn -main [& [port]]
   (let [port (Integer. (or port (env :port) 5000))]
     (jetty/run-jetty (handler/api (-> #'app
+                                      wrap-authentication
                                       wrap-keyword-params))
                      {:port port :join? false})))
