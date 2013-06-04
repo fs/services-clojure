@@ -31,7 +31,7 @@
 (defroutes app
   (POST "/deploy/:project" [project :as {{branch :branch} :params}]
        (deploy project branch))
-  (POST "/ci" {body :body { deploy-branches :deploy-branches} :query-params}
+  (POST "/ci/:project" {body :body { deploy-branches :deploy-branches} :query-params}
         (ci-hook body (set (string/split deploy-branches #","))))
   (route/not-found "Not Found"))
 
